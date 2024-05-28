@@ -120,7 +120,6 @@ textarea {
 .chk.finished { background-color: #05CC95; }
 .chk.missed { background-color: #FF8737; }
 .chk.cancelled { background-color: #837036; }
-
 """
 
 JAVASCRIPT = """"use strict"
@@ -212,7 +211,8 @@ BASE_HTML = """<!DOCTYPE html>
         {body}
         <script>{script}</script>
     </body>
-</html>"""
+</html>
+"""
 
 SECTION_MENU_HTML = """<div class="section-menu">
     <svg id="menubutton" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" class="bi bi-three-dots-vertical" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path> </g></svg>
@@ -304,128 +304,112 @@ class Tasks:
         if tasks == None:
             tasks = self.tasks
             
-        rawhtml = ""
-        
+        html = ""
+            
         for date, sections in tasks.items():
-            rawhtml += "<div class=\"day-container\"><div>"
-            rawhtml += f"<h1>{date}</h1>"
+            day_template = "<div class=\"day-container\"><div><h1>{date}</h1>{sections}</div>{menu}</div>"
+            section_template = "<div class=\"day-section\"><h2>{section}</h2>{tasks}</div>"
+            task_template = "<p>{task}</p>"
+            
+            html_sections = ""
             for section in sections:
-                rawhtml += "<div class=\"day-section\">"
-                rawhtml += f"<h2>{section['heading']}</h2>"
+                html_tasks = ""
                 for task in section["tasks"]:
                     for checkbox, element in self.html_checkboxes.items():
                         task = task.replace(checkbox, element)
-                    rawhtml += f"<p>{task}</p>"
-                rawhtml += "</div>"
-            rawhtml += f"</div>{SECTION_MENU_HTML}</div>"
-        
-        return rawhtml
+                    html_tasks += task_template.format(task=task)
+                html_sections += section_template.format(section=section["heading"], tasks=html_tasks)
+            html += day_template.format(date=date, sections=html_sections, menu=open("./static/section-menu.html", "r").read())
 
-    def htmlday(self, day):            
-        rawhtml = ""
+        return html
+
+    def html_day(self, day):
+        html = ""
         
         for date, sections in day.items():
-            rawhtml += f"<h1>{date}</h1>"
+            day_template = "<div><h1>{date}</h1>{sections}</div>"
+            section_template = "<div class=\"day-section\"><h2>{section}</h2>{tasks}</div>"
+            task_template = "<p>{task}</p>"
+            
+            html_sections = ""
             for section in sections:
-                rawhtml += "<div class=\"day-section\">"
-                rawhtml += f"<h2>{section['heading']}</h2>"
+                html_tasks = ""
                 for task in section["tasks"]:
                     for checkbox, element in self.html_checkboxes.items():
                         task = task.replace(checkbox, element)
-                    rawhtml += f"<p>{task}</p>"
-                rawhtml += "</div>"
+                    html_tasks += task_template.format(task=task)
+                html_sections += section_template.format(section=section["heading"], tasks=html_tasks)
+            html += day_template.format(date=date, sections=html_sections, menu=open("./static/section-menu.html", "r").read())
         
-        return rawhtml
+        return html
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             self.send_response(200)
             self.send_header("Content-type", "text/html")
-            self.end_headers()
-            
             tasks = Tasks("tasks.tsk")
+            response = open("./static/index.html", "r").read().format(body=tasks.html())
             
-            html = BASE_HTML.format(
-                style=STYLES,
-                script=JAVASCRIPT,
-                body=tasks.html()
-            )
+        elif self.path == "/static/style.css":
+            self.send_response(200)
+            self.send_header("Content-type", "text/css")
+            response = open("./static/style.css", "r").read()
             
-            self.wfile.write(html.encode())
+        elif self.path == "/static/script.js":
+            self.send_response(200)
+            self.send_header("Content-type", "text/javascript")
+            response = open("./static/script.js", "r").read()
+            
         else:
             self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b"404 Not Found")
-
+            response = "404 Not Found"
+        
+        self.end_headers()
+        self.wfile.write(response.encode())
+            
     def do_POST(self):
+        content_length = int(self.headers["Content-Length"])
+        post_data = self.rfile.read(content_length)
+        
+        try:
+            data = json.loads(post_data.decode("utf-8"))
+        except json.JSONDecodeError:
+            self.send_response(400)
+            self.end_headers()
+            self.wfile.write(b"Invalid JSON")
+            return None
+        
+        tasks = Tasks("tasks.tsk")
+        
         if self.path == "/getcode":
-            content_length = int(self.headers["Content-Length"])
-            post_data = self.rfile.read(content_length)
+            source = tasks.getcode(data["date"])
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            response = json.dumps({"source": source.strip("\n")})
             
-            try:
-                data = json.loads(post_data.decode("utf-8"))
-                
-                tasks = Tasks("tasks.tsk")                
-                source = tasks.getcode(data["date"])
-                
-                self.send_response(200)
-                self.send_header("Content-type", "application/json")
-                self.end_headers()
-                response = json.dumps({"source": source.strip("\n")})
-                self.wfile.write(response.encode())
-            except json.JSONDecodeError:
-                self.send_response(400)
-                self.end_headers()
-                self.wfile.write(b"Invalid JSON")
         elif self.path == "/save":
-            content_length = int(self.headers["Content-Length"])
-            post_data = self.rfile.read(content_length)
-            
-            try:
-                data = json.loads(post_data.decode("utf-8"))
+            tasks.update(data["date"], "\n"+data["source"]+"\n")
+            parsed = tasks.parse("---\n"+data["source"])
+            html = tasks.html_day(parsed)
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            response = json.dumps({"html": html})
                 
-                tasks = Tasks("tasks.tsk")
-                tasks.update(data["date"], "\n"+data["source"]+"\n")
-                parsed = tasks.parse("---\n"+data["source"])
-                newhtml = tasks.htmlday(parsed)
-                
-                self.send_response(200)
-                self.send_header("Content-type", "application/json")
-                self.end_headers()
-                response = json.dumps({"html": newhtml})
-                self.wfile.write(response.encode())
-            except json.JSONDecodeError:
-                self.send_response(400)
-                self.end_headers()
-                self.wfile.write(b"Invalid JSON")
         elif self.path == "/add":
-            content_length = int(self.headers["Content-Length"])
-            post_data = self.rfile.read(content_length)
-            
-            try:
-                data = json.loads(post_data.decode("utf-8"))
+            tasks.add("\n"+data["source"]+"\n---")
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            response = json.dumps({"html": tasks.html()})
                 
-                tasks = Tasks("tasks.tsk")
-                tasks.add("\n"+data["source"]+"\n---")
-                
-                self.send_response(200)
-                self.send_header("Content-type", "application/json")
-                self.end_headers()
-                response = json.dumps({"html": tasks.html()})
-                self.wfile.write(response.encode())
-            except json.JSONDecodeError:
-                self.send_response(400)
-                self.end_headers()
-                self.wfile.write(b"Invalid JSON")
         else:
             self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b"404 Not Found")
+            response = "404 Not Found"
+
+        self.end_headers()
+        self.wfile.write(response.encode())
 
 serveraddr = ("", 8000)
-
 httpd = HTTPServer(serveraddr, HTTPRequestHandler)
-
 print("Starting server on port 8000...")
 httpd.serve_forever()
