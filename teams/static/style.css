@@ -1,0 +1,118 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #2D333B;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #444C56;
+    border-radius: 4px;
+}
+
+body {
+    background-color: #242132;
+    font-family: monospace;
+}
+
+a {
+    color: blue;
+    text-decoration: none;
+}
+
+textarea {
+    display: relative;
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    resize: none;
+    background-color: #242132;
+    outline: none;
+    border: 1px solid #6D6B77;
+    border-radius: 10px;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+#add-btn {
+    display: flex;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: #363344;
+    border: 1px solid #6D6B77;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px;
+    cursor: pointer;
+}
+
+#add-btn > svg {
+    width: 30px;
+    height: 30px;
+}
+
+.day-container {
+    display: flex;
+    justify-content: space-between;
+    background-color: #363344;
+    border: 1px solid #6D6B77;
+    border-radius: 20px;
+    margin: 20px;
+    padding: 20px;
+}
+
+.day-container > :first-child {
+    width: 80%;
+    box-sizing: border-box;
+    color: #fff;
+}
+
+.day-container > :last-child {
+    display: flex;
+    width: 20%;
+    justify-content: flex-end;
+}
+
+.day-container > .section-menu > svg {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
+.day-section {
+    display: flex;
+    margin-top: 10px;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.day-section > h2 {
+    color: #CE3DF3;
+}
+
+.day-section > p {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.chk {
+    display: flex;
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    border-radius: 2px;
+    border: 1px solid #6D6B77;
+}
+
+.chk.empty { background-color: transparent; }
+.chk.finished { background-color: #05CC95; }
+.chk.missed { background-color: #FF8737; }
+.chk.cancelled { background-color: #837036; }
