@@ -69,14 +69,14 @@ textarea {
 }
 
 .day-container > :first-child {
-    width: 80%;
+    width: 50%;
     box-sizing: border-box;
     color: #fff;
 }
 
 .day-container > :last-child {
     display: flex;
-    width: 20%;
+    width: 50%;
     justify-content: flex-end;
 }
 
