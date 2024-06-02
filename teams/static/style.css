@@ -35,7 +35,7 @@ textarea {
     background-color: #242132;
     outline: none;
     border: 1px solid #6D6B77;
-    border-radius: 10px;
+    border-radius: 7px;
     color: #fff;
     box-sizing: border-box;
 }
@@ -47,7 +47,7 @@ textarea {
     justify-content: center;
     background-color: #363344;
     border: 1px solid #6D6B77;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 20px;
     margin: 20px;
     cursor: pointer;
@@ -63,7 +63,7 @@ textarea {
     justify-content: space-between;
     background-color: #363344;
     border: 1px solid #6D6B77;
-    border-radius: 20px;
+    border-radius: 10px;
     margin: 20px;
     padding: 20px;
 }
@@ -95,6 +95,7 @@ textarea {
 
 .day-section > h2 {
     color: #CE3DF3;
+    padding-top: 5px;
 }
 
 .day-section > p {
