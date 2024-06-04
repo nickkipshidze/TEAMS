@@ -69,14 +69,14 @@ textarea {
 }
 
 .day-container > :first-child {
-    width: 50%;
+    width: 90%;
     box-sizing: border-box;
     color: #fff;
 }
 
 .day-container > :last-child {
     display: flex;
-    width: 50%;
+    width: 10%;
     justify-content: flex-end;
 }
 
@@ -117,3 +117,4 @@ textarea {
 .chk.finished { background-color: #05CC95; }
 .chk.missed { background-color: #FF8737; }
 .chk.cancelled { background-color: #837036; }
+.chk.overwork { background-color: #00ff0d; }
