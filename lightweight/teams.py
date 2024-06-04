@@ -39,27 +39,27 @@ textarea {
     background-color: #242132;
     outline: none;
     border: 1px solid #6D6B77;
-    border-radius: 10px;
+    border-radius: 7px;
     color: #fff;
     box-sizing: border-box;
 }
 
 #add-btn {
     display: flex;
-    height: 20px;
+    height: 1px;
     align-items: center;
     justify-content: center;
     background-color: #363344;
     border: 1px solid #6D6B77;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 20px;
     margin: 20px;
     cursor: pointer;
 }
 
 #add-btn > svg {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
 }
 
 .day-container {
@@ -67,20 +67,20 @@ textarea {
     justify-content: space-between;
     background-color: #363344;
     border: 1px solid #6D6B77;
-    border-radius: 20px;
+    border-radius: 10px;
     margin: 20px;
     padding: 20px;
 }
 
 .day-container > :first-child {
-    width: 80%;
+    width: 90%;
     box-sizing: border-box;
     color: #fff;
 }
 
 .day-container > :last-child {
     display: flex;
-    width: 20%;
+    width: 10%;
     justify-content: flex-end;
 }
 
@@ -99,6 +99,7 @@ textarea {
 
 .day-section > h2 {
     color: #CE3DF3;
+    padding-top: 5px;
 }
 
 .day-section > p {
@@ -120,6 +121,7 @@ textarea {
 .chk.finished { background-color: #05CC95; }
 .chk.missed { background-color: #FF8737; }
 .chk.cancelled { background-color: #837036; }
+.chk.overwork { background-color: #00ff0d; }
 """
 
 JAVASCRIPT = """"use strict"
@@ -225,13 +227,15 @@ class Tasks:
             "[ ]": "Empty",
             "[+]": "Completed",
             "[-]": "Missed",
-            "[!]": "Cancelled"
+            "[!]": "Cancelled",
+            "[x]": "Overwork"
         }
         self.html_checkboxes = {
             "[ ]": "<span class=\"chk empty\"></span>",
             "[+]": "<span class=\"chk finished\"></span>",
             "[-]": "<span class=\"chk missed\"></span>",
-            "[!]": "<span class=\"chk cancelled\"></span>"
+            "[!]": "<span class=\"chk cancelled\"></span>",
+            "[x]": "<span class=\"chk overwork\"></span>"
         }
         
         self.tasksfile = tasksfile
