@@ -8,13 +8,15 @@ class Tasks:
             "[ ]": "Empty",
             "[+]": "Completed",
             "[-]": "Missed",
-            "[!]": "Cancelled"
+            "[!]": "Cancelled",
+            "[x]": "Overwork"
         }
         self.html_checkboxes = {
             "[ ]": "<span class=\"chk empty\"></span>",
             "[+]": "<span class=\"chk finished\"></span>",
             "[-]": "<span class=\"chk missed\"></span>",
-            "[!]": "<span class=\"chk cancelled\"></span>"
+            "[!]": "<span class=\"chk cancelled\"></span>",
+            "[x]": "<span class=\"chk overwork\"></span>"
         }
         
         self.tasksfile = tasksfile
