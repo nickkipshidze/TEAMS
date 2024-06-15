@@ -34,7 +34,7 @@ textarea {
     resize: none;
     background-color: #242132;
     outline: none;
-    border: 1px solid #6D6B77;
+    border: none;
     border-radius: 7px;
     color: #fff;
     box-sizing: border-box;
@@ -51,6 +51,14 @@ textarea {
     padding: 20px;
     margin: 20px;
     cursor: pointer;
+}
+
+#add-btn:hover {
+    background-color: #433e53;
+}
+
+#add-btn:active {
+    background-color: #544f64;
 }
 
 #add-btn > svg {
@@ -81,9 +89,20 @@ textarea {
 }
 
 .day-container > .section-menu > svg {
+    padding: 2px;
     cursor: pointer;
     width: 20px;
     height: 20px;
+}
+
+.day-container > .section-menu > svg:hover {
+    background-color: #6d6b77b0;
+    border-radius: 5px;
+}
+
+.day-container > .section-menu > svg:active {
+    background-color: #6d6b77;
+    border-radius: 5px;
 }
 
 .day-section {
