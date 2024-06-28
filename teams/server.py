@@ -10,24 +10,29 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             tasks = Tasks(f"{BASE_DIR}/tasks.tsk")
-            response = open(f"{BASE_DIR}/static/index.html", "r").read().format(body=tasks.html())
+            response = open(f"{BASE_DIR}/static/index.html", "r").read().format(body=tasks.html()).encode()
             
         elif self.path == "/static/style.css":
             self.send_response(200)
             self.send_header("Content-type", "text/css")
-            response = open(f"{BASE_DIR}/static/style.css", "r").read()
+            response = open(f"{BASE_DIR}/static/style.css", "r").read().encode()
             
         elif self.path == "/static/script.js":
             self.send_response(200)
             self.send_header("Content-type", "text/javascript")
-            response = open(f"{BASE_DIR}/static/script.js", "r").read()
+            response = open(f"{BASE_DIR}/static/script.js", "r").read().encode()
+
+        elif self.path == "/favicon.ico":
+            self.send_response(200)
+            self.send_header("Content-type", "image/png")
+            response = open(f"{BASE_DIR}/static/favicon.png", "rb").read()
             
         else:
             self.send_response(404)
             response = "404 Not Found"
-        
+
         self.end_headers()
-        self.wfile.write(response.encode())
+        self.wfile.write(response)
             
     def do_POST(self):
         content_length = int(self.headers["Content-Length"])
