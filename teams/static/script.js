@@ -27,10 +27,11 @@ document.querySelectorAll("#menubutton").forEach((element) => {
                     "source": source
                 })
             })
+            if (newhtml.status == 204) window.location.reload()
             newhtml = await newhtml.json()
             newhtml = newhtml.html
             
-            dayElement.innerHTML = newhtml      
+            dayElement.innerHTML = newhtml
         } else {
             let date = dayElement.firstChild.innerText
             
