@@ -80,10 +80,13 @@ class Tasks:
             date = lines[0][2:]
             if date == targetdate:
                 rawdays[rawdays.index(rawday)] = newsource
-        
+
+        for _ in range(rawdays.count("\n\n")): rawdays.remove("\n\n")
+
         open(self.tasksfile, "w").write(
             "---".join(rawdays)
         )
+        self.rawtasks = open(self.tasksfile, "r").read()
         
     def html(self, tasks=None):
         if tasks == None:
