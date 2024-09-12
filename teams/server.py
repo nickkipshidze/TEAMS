@@ -56,11 +56,15 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             
         elif self.path == "/save":
             tasks.update(data["date"], "\n"+data["source"]+"\n")
-            parsed = tasks.parse("---\n"+data["source"])
-            html = tasks.html_day(parsed)
-            self.send_response(200)
-            self.send_header("Content-type", "application/json")
-            response = json.dumps({"html": html})
+            if data["source"] != "":
+                parsed = tasks.parse("---\n"+data["source"])
+                html = tasks.html_day(parsed)
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                response = json.dumps({"html": html})
+            else:
+                self.send_response(204)
+                response = "204 No Content"
                 
         elif self.path == "/add":
             tasks.add("\n"+data["source"]+"\n---")
